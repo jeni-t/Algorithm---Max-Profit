@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function maxProfit(n) {
+    const BUILDINGS = [
+        { name: "T", time: 5, earn: 1500 },
+        { name: "P", time: 4, earn: 1000 },
+        { name: "C", time: 10, earn: 2000 }
+    ];
+
+    let bestProfit = 0;
+    let bestCombo = { T: 0, P: 0, C: 0 };
+
+    // Try all combinations
+    for (let t = 0; t <= Math.floor(n / 5); t++) {
+        for (let p = 0; p <= Math.floor(n / 4); p++) {
+            for (let c = 0; c <= Math.floor(n / 10); c++) {
+                
+                const totalBuildTime = (t * 5) + (p * 4) + (c * 10);
+                if (totalBuildTime > n) continue;  // Skip invalid
+
+                let time = 0;
+                let profit = 0;
+
+                // Build theatres
+                for (let i = 0; i < t; i++) {
+                    time += 5;
+                    profit += (n - time) * 1500;
+                }
+
+                // Build pubs
+                for (let i = 0; i < p; i++) {
+                    time += 4;
+                    profit += (n - time) * 1000;
+                }
+
+                // Build commercial parks
+                for (let i = 0; i < c; i++) {
+                    time += 10;
+                    profit += (n - time) * 2000;
+                }
+
+                // Update best result
+                if (profit > bestProfit) {
+                    bestProfit = profit;
+                    bestCombo = { T: t, P: p, C: c };
+                }
+            }
+        }
+    }
+
+    return { bestCombo, bestProfit };
+}
+
+    </script>
+</body>
+</html>
