@@ -30,7 +30,6 @@ function maxProfit(n) {
 
         if (totalBuildTime > n) continue;
 
-        // simulate BEST order:
         // build higher earning earlier
         const buildOrder = [
           ...Array(T).fill("T"),
@@ -66,8 +65,7 @@ function maxProfit(n) {
     solutions
   };
 }
-
-/* 🔥 TEST CASES */
+// Test case
 console.log("n = 7", maxProfit(7));
 console.log("n = 8", maxProfit(8));
 console.log("n = 13", maxProfit(13));
