@@ -1,63 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <title>Max Profit</title>
 </head>
 <body>
-    <script>
-        function maxProfit(n) {
-    const BUILDINGS = [
-        { name: "T", time: 5, earn: 1500 },
-        { name: "P", time: 4, earn: 1000 },
-        { name: "C", time: 10, earn: 2000 }
-    ];
+<script>
+function maxProfit(n) {
+  const buildings = {
+    T: { time: 5, earn: 1500 },
+    P: { time: 4, earn: 1000 },
+    C: { time: 10, earn: 2000 }
+  };
 
-    let bestProfit = 0;
-    let bestCombo = { T: 0, P: 0, C: 0 };
+  let maxEarnings = 0;
+  let solutions = [];
 
-    // Try all combinations
-    for (let t = 0; t <= Math.floor(n / 5); t++) {
-        for (let p = 0; p <= Math.floor(n / 4); p++) {
-            for (let c = 0; c <= Math.floor(n / 10); c++) {
-                
-                const totalBuildTime = (t * 5) + (p * 4) + (c * 10);
-                if (totalBuildTime > n) continue;  // Skip invalid
+  // max possible counts (safe upper bound)
+  const maxT = Math.floor(n / 5);
+  const maxP = Math.floor(n / 4);
+  const maxC = Math.floor(n / 10);
 
-                let time = 0;
-                let profit = 0;
+  for (let T = 0; T <= maxT; T++) {
+    for (let P = 0; P <= maxP; P++) {
+      for (let C = 0; C <= maxC; C++) {
 
-                // Build theatres
-                for (let i = 0; i < t; i++) {
-                    time += 5;
-                    profit += (n - time) * 1500;
-                }
+        // total build time
+        const totalBuildTime =
+          T * 5 + P * 4 + C * 10;
 
-                // Build pubs
-                for (let i = 0; i < p; i++) {
-                    time += 4;
-                    profit += (n - time) * 1000;
-                }
+        if (totalBuildTime > n) continue;
 
-                // Build commercial parks
-                for (let i = 0; i < c; i++) {
-                    time += 10;
-                    profit += (n - time) * 2000;
-                }
+        // simulate BEST order:
+        // build higher earning earlier
+        const buildOrder = [
+          ...Array(T).fill("T"),
+          ...Array(P).fill("P"),
+          ...Array(C).fill("C")
+        ].sort(
+          (a, b) => buildings[b].earn - buildings[a].earn
+        );
 
-                // Update best result
-                if (profit > bestProfit) {
-                    bestProfit = profit;
-                    bestCombo = { T: t, P: p, C: c };
-                }
-            }
+        let time = 0;
+        let earnings = 0;
+
+        for (let b of buildOrder) {
+          time += buildings[b].time;
+          if (time <= n) {
+            earnings += (n - time) * buildings[b].earn;
+          }
         }
-    }
 
-    return { bestCombo, bestProfit };
+        if (earnings > maxEarnings) {
+          maxEarnings = earnings;
+          solutions = [{ T, P, C }];
+        } else if (earnings === maxEarnings && earnings > 0) {
+          solutions.push({ T, P, C });
+        }
+      }
+    }
+  }
+
+  return {
+    timeUnit: n,
+    earnings: maxEarnings,
+    solutions
+  };
 }
 
-    </script>
+/* 🔥 TEST CASES */
+console.log("n = 7", maxProfit(7));
+console.log("n = 8", maxProfit(8));
+console.log("n = 13", maxProfit(13));
+console.log("n = 49", maxProfit(49));
+</script>
 </body>
 </html>
